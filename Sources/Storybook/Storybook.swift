@@ -5,7 +5,7 @@ import Foundation
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public class Storybook: NSObject {
-    public static func build() -> [StorybookPage] {
+    static func build() -> [StorybookPage] {
         var count: CUnsignedInt = 0
         guard let methods = class_copyPropertyList(object_getClass(Storybook.self), &count) else {
             print("No previews were found as static members")
