@@ -48,9 +48,24 @@ struct StorybookItemView: View {
 @available(macOS 10.15, *)
 public struct StorybookCollection: View {
     
-    public init() { }
+    let pages: [StorybookPage]
+    public init() {
+        self.pages = Storybook.build()
+    }
     
     public var body: some View {
+        if pages.count == 0 {
+            noPagesMessage()
+        } else {
+            pageContent()
+        }
+    }
+    
+    private func noPagesMessage() -> some View {
+        Text("No pages were found :( check the docs to make sure you set things up properly.")
+    }
+    
+    private func pageContent() -> some View {
         #if os(macOS)
         NavigationView {
             List(Storybook.build()) { item in
