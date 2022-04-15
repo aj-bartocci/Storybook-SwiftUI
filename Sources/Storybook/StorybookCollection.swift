@@ -15,21 +15,24 @@ struct StorybookItemView: View {
         if preview.views.count == 0 {
             Text("Error: No views provided")
         } else if preview.views.count == 1 {
-            viewWithTitle(for: preview.views[0])
+            viewWithTitle(preview.title, view: preview.views[0].view)
         } else {
-            List(preview.views) { item in
-                rowView(for: item)
-            }
+            viewWithTitle(
+                preview.title,
+                view: List(preview.views) { item in
+                    rowView(for: item)
+                }
+            )
         }
     }
     
-    private func viewWithTitle(for item: StoryBookView) -> some View {
+    private func viewWithTitle<T: View>(_ title: String, view: T) -> some View {
         #if os(macOS)
-        item.view
+        view
         #else
-        item.view
+        view
         .navigationBarTitle(
-            Text(item.title),
+            Text(title),
             displayMode: .inline
         )
         #endif
@@ -37,7 +40,7 @@ struct StorybookItemView: View {
     
     private func rowView(for item: StoryBookView) -> some View {
         NavigationLink(destination: {
-            viewWithTitle(for: item)
+            viewWithTitle(item.title, view: item.view)
         }, label: {
             Text(item.title)
         })
