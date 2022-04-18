@@ -1,5 +1,3 @@
-#if DEBUG
-
 import SwiftUI
 
 @available(iOS 13.0, *)
@@ -47,5 +45,3 @@ public class StorybookPage: NSObject, Identifiable {
         self.file = fileComponents.last ?? "uknown"
     }
 }
-
-#endif
