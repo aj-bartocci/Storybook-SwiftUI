@@ -22,7 +22,7 @@ public class Storybook: NSObject {
                 previews.append(preview)
             }
         }
-        return previews
+        return previews.sorted(by: { $0.title < $1.title })
     }
 }
 
