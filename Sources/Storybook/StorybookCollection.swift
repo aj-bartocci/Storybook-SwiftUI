@@ -99,36 +99,36 @@ public struct StorybookCollection: View {
     }
 }
 
-// For visually testing things out
-
-@available(iOS 13, *)
-struct ContentView: View {
-    
-    let title: String
-    init(title: String = "Hello, world!") {
-        self.title = title
-    }
-    
-    var body: some View {
-        Text(title)
-    }
-}
-
-@available(iOS 13, *)
-extension Storybook {
-    @objc static let view = StorybookPage(title: "Foo", chapter: "1", view: ContentView(title: "Foo"))
-    @objc static let otherView = StorybookPage(title: "Baz", chapter: "1", view: ContentView(title: "Baz!!!"))
-    @objc static let otherViews = StorybookPage(title: "Bar", chapter: "2", views: [
-        StoryBookView(title: "One", view: ContentView(title: "One!")),
-        StoryBookView(title: "Two", view: ContentView(title: "Two!!!"))
-    ])
-}
-
-@available(iOS 13, *)
-struct StorybookPreviews: PreviewProvider {
-    static var previews: some View {
-        StorybookCollection()
-    }
-}
+//// For visually testing things out
+//
+//@available(iOS 13, *)
+//struct ContentView: View {
+//
+//    let title: String
+//    init(title: String = "Hello, world!") {
+//        self.title = title
+//    }
+//
+//    var body: some View {
+//        Text(title)
+//    }
+//}
+//
+//@available(iOS 13, *)
+//extension Storybook {
+//    @objc static let view = StorybookPage(title: "Foo", chapter: "1", view: ContentView(title: "Foo"))
+//    @objc static let otherView = StorybookPage(title: "Baz", chapter: "1", view: ContentView(title: "Baz!!!"))
+//    @objc static let otherViews = StorybookPage(title: "Bar", chapter: "2", views: [
+//        StoryBookView(title: "One", view: ContentView(title: "One!")),
+//        StoryBookView(title: "Two", view: ContentView(title: "Two!!!"))
+//    ])
+//}
+//
+//@available(iOS 13, *)
+//struct StorybookPreviews: PreviewProvider {
+//    static var previews: some View {
+//        StorybookCollection()
+//    }
+//}
 
 #endif
