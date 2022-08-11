@@ -6,7 +6,7 @@ import SwiftUI
 @available(macOS 10.15, *)
 public struct StorybookCollection: View {
     
-    @State var showIsolatedView = false
+    @State var selectedItem: StorybookPage?
     let embedInNav: Bool
     let chapters: [StorybookChapter]
     public init(embedInNav: Bool = true) {
@@ -38,6 +38,9 @@ public struct StorybookCollection: View {
         #else
             listContent()
             .navigationBarTitle("Storybook", displayMode: .inline)
+            .sheet(item: $selectedItem, onDismiss: nil, content: { item in
+                StorybookItemView(preview: item)
+            })
         #endif
     }
     
@@ -70,11 +73,8 @@ public struct StorybookCollection: View {
             )
             .contentShape(Rectangle())
             .onTapGesture {
-                showIsolatedView = true
+                selectedItem = item
             }
-            .sheet(isPresented: $showIsolatedView, onDismiss: nil, content: {
-                StorybookItemView(preview: item)
-            })
         #endif
     }
         
@@ -99,29 +99,36 @@ public struct StorybookCollection: View {
     }
 }
 
-//// For visually testing things out
-//
-//@available(iOS 13, *)
-//struct ContentView: View {
-//    var body: some View {
-//        Text("Hello world!")
-//    }
-//}
-//
-//@available(iOS 13, *)
-//extension Storybook {
-//    @objc static let view = StorybookPage(title: "Foo", chapter: "1", view: ContentView())
-//    @objc static let otherViews = StorybookPage(title: "Bar", chapter: "2", views: [
-//        StoryBookView(title: "One", view: ContentView()),
-//        StoryBookView(title: "Two", view: ContentView())
-//    ])
-//}
-//
-//@available(iOS 13, *)
-//struct StorybookPreviews: PreviewProvider {
-//    static var previews: some View {
-//        StorybookCollection()
-//    }
-//}
+// For visually testing things out
+
+@available(iOS 13, *)
+struct ContentView: View {
+    
+    let title: String
+    init(title: String = "Hello, world!") {
+        self.title = title
+    }
+    
+    var body: some View {
+        Text(title)
+    }
+}
+
+@available(iOS 13, *)
+extension Storybook {
+    @objc static let view = StorybookPage(title: "Foo", chapter: "1", view: ContentView(title: "Foo"))
+    @objc static let otherView = StorybookPage(title: "Baz", chapter: "1", view: ContentView(title: "Baz!!!"))
+    @objc static let otherViews = StorybookPage(title: "Bar", chapter: "2", views: [
+        StoryBookView(title: "One", view: ContentView(title: "One!")),
+        StoryBookView(title: "Two", view: ContentView(title: "Two!!!"))
+    ])
+}
+
+@available(iOS 13, *)
+struct StorybookPreviews: PreviewProvider {
+    static var previews: some View {
+        StorybookCollection()
+    }
+}
 
 #endif

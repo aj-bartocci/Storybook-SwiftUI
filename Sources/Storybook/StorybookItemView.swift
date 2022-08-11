@@ -6,7 +6,7 @@ import SwiftUI
 @available(macOS 10.15, *)
 struct StorybookItemView: View {
     
-    @State private var showIsolatedView = false
+    @State private var selectedItem: StoryBookView?
     let preview: StorybookPage
     init(preview: StorybookPage) {
         self.preview = preview
@@ -24,6 +24,9 @@ struct StorybookItemView: View {
                     rowView(for: item)
                 }
             )
+            .sheet(item: $selectedItem, onDismiss: nil, content: { item in
+                item.view
+            })
         }
     }
     
@@ -79,11 +82,8 @@ struct StorybookItemView: View {
         )
         .contentShape(Rectangle())
         .onTapGesture {
-            showIsolatedView = true
+            selectedItem = item
         }
-        .sheet(isPresented: $showIsolatedView, onDismiss: nil, content: {
-            item.view
-        })
     }
     #endif
 }
