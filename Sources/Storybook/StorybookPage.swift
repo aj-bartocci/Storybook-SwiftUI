@@ -23,14 +23,17 @@ public class StorybookPage: NSObject, Identifiable {
     let title: String
     let views: [StoryBookView]
     let file: String
+    let chapter: String
     
     public convenience init<T: View>(
         title: String,
+        chapter: String? = nil,
         view: T,
         file: String = #file
     ) {
         self.init(
             title: title,
+            chapter: chapter,
             views: [StoryBookView(title: title, view: view)],
             file: file
         )
@@ -38,10 +41,12 @@ public class StorybookPage: NSObject, Identifiable {
     
     public init(
         title: String,
+        chapter: String? = nil,
         views: [StoryBookView],
         file: String = #file
     ) {
         self.title = title
+        self.chapter = chapter ?? "Uncategorized"
         self.views = views
         let fileComponents = file.components(separatedBy: "/")
         self.file = fileComponents.last ?? "uknown"
