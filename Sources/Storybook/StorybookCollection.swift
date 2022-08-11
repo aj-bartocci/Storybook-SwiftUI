@@ -4,55 +4,6 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
-struct StorybookItemView: View {
-    
-    @State private var showIsolatedView = false
-    let preview: StorybookPage
-    init(preview: StorybookPage) {
-        self.preview = preview
-    }
-    
-    var body: some View {
-        if preview.views.count == 0 {
-            Text("Error: No views provided")
-        } else if preview.views.count == 1 {
-            viewWithTitle(preview.title, view: preview.views[0].view)
-        } else {
-            viewWithTitle(
-                preview.title,
-                view: List(preview.views) { item in
-                    rowView(for: item)
-                }
-            )
-        }
-    }
-    
-    private func viewWithTitle<T: View>(_ title: String, view: T) -> some View {
-        #if os(macOS)
-        view
-        #else
-        view
-        .navigationBarTitle(
-            Text(title),
-            displayMode: .inline
-        )
-        #endif
-    }
-    
-    private func rowView(for item: StoryBookView) -> some View {
-        NavigationLink(isActive: .constant(false), destination: { EmptyView() }, label: { Text(item.title) })
-        .contentShape(Rectangle())
-        .onTapGesture {
-            showIsolatedView = true
-        }
-        .sheet(isPresented: $showIsolatedView, onDismiss: nil, content: {
-            item.view
-        })
-    }
-}
-
-@available(iOS 13.0, *)
-@available(macOS 10.15, *)
 public struct StorybookCollection: View {
     
     @State var showIsolatedView = false
@@ -98,6 +49,34 @@ public struct StorybookCollection: View {
             .font(.caption)
         }
     }
+    
+    private func navLink(for item: StorybookPage) -> some View {
+        #if os(macOS)
+            return NavigationLink(
+                destination: {
+                    StorybookItemView(preview: item)
+                }, label: {
+                    rowContent(for: item)
+                }
+            )
+        #else
+            return NavigationLink(
+                isActive: .constant(false),
+                destination: {
+                    EmptyView()
+                }, label: {
+                    rowContent(for: item)
+                }
+            )
+            .contentShape(Rectangle())
+            .onTapGesture {
+                showIsolatedView = true
+            }
+            .sheet(isPresented: $showIsolatedView, onDismiss: nil, content: {
+                StorybookItemView(preview: item)
+            })
+        #endif
+    }
         
     private func listContent() -> some View {
         List(chapters) { chapter in
@@ -110,16 +89,7 @@ public struct StorybookCollection: View {
                             rowContent(for: item)
                         })
                     } else {
-                        NavigationLink(isActive: .constant(false), destination: { EmptyView() }, label: {
-                            rowContent(for: item)
-                        })
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            showIsolatedView = true
-                        }
-                        .sheet(isPresented: $showIsolatedView, onDismiss: nil, content: {
-                            StorybookItemView(preview: item)
-                        })
+                        navLink(for: item)
                     }
                 })
             }, header: {
@@ -128,5 +98,30 @@ public struct StorybookCollection: View {
         }
     }
 }
+
+//// For visually testing things out
+//
+//@available(iOS 13, *)
+//struct ContentView: View {
+//    var body: some View {
+//        Text("Hello world!")
+//    }
+//}
+//
+//@available(iOS 13, *)
+//extension Storybook {
+//    @objc static let view = StorybookPage(title: "Foo", chapter: "1", view: ContentView())
+//    @objc static let otherViews = StorybookPage(title: "Bar", chapter: "2", views: [
+//        StoryBookView(title: "One", view: ContentView()),
+//        StoryBookView(title: "Two", view: ContentView())
+//    ])
+//}
+//
+//@available(iOS 13, *)
+//struct StorybookPreviews: PreviewProvider {
+//    static var previews: some View {
+//        StorybookCollection()
+//    }
+//}
 
 #endif
