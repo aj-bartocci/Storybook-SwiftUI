@@ -1,4 +1,4 @@
-#if DEBUG
+#if DEBUG || ALLOW_STORYBOOK_RELEASE
 
 import Foundation
 
