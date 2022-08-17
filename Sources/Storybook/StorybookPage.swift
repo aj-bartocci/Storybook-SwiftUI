@@ -1,4 +1,4 @@
-#if DEBUG
+#if canImport(SwiftUI)
 
 import SwiftUI
 
