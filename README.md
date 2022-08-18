@@ -31,9 +31,9 @@ https://user-images.githubusercontent.com/16612478/185280246-6512760d-1f80-4b46-
 
 ## Roadmap
 
-- Add short video showing what it renders
 - Configurable components
-    - To be more like storyboard there should be the ability to configure components on the fly. I.e. setting text values, number values, etc. One possible way could be through reflection. 
+    - To be more like storyboard there should be the ability to configure components on the fly. I.e. setting text values, number values, etc. One possible way could be through reflection.
+- Be able to ship storybook with staging builds for designers to view alongside the app. Current work for this happening on the experimental branch.
 - TBD
 
 ## Recommended Setup
