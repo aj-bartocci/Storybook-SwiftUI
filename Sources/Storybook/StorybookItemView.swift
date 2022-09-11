@@ -16,7 +16,7 @@ struct StorybookItemView: View {
         if preview.views.count == 0 {
             Text("Error: No views provided")
         } else if preview.views.count == 1 {
-            viewWithTitle(preview.title, view: preview.views[0].view)
+            viewWithTitle(preview.title, view: preview.views[0].view())
         } else {
             nestedViewWithTitle(
                 preview.title,
@@ -25,7 +25,7 @@ struct StorybookItemView: View {
                 }
             )
             .sheet(item: $selectedItem, onDismiss: nil, content: { item in
-                item.view
+                item.view()
             })
         }
     }

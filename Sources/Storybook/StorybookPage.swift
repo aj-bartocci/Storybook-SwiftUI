@@ -7,11 +7,17 @@ import SwiftUI
 public struct StoryBookView: Identifiable {
     public let id = UUID()
     let title: String
-    let view: AnyView
+    let view: () -> AnyView
     
-    public init<T: View>(title: String, view: T) {
+    public init<T: View>(title: String, view: @autoclosure @escaping () -> T) {
+        self.init(title: title, view: {
+            return AnyView(view())
+        })
+    }
+    
+    init(title: String, view: @escaping () -> AnyView) {
         self.title = title
-        self.view = AnyView(view)
+        self.view = view
     }
 }
 
@@ -28,13 +34,20 @@ public class StorybookPage: NSObject, Identifiable {
     public convenience init<T: View>(
         title: String,
         chapter: String? = nil,
-        view: T,
+        view: @autoclosure @escaping () -> T,
         file: String = #file
     ) {
         self.init(
             title: title,
             chapter: chapter,
-            views: [StoryBookView(title: title, view: view)],
+            views: [
+                StoryBookView(
+                    title: title,
+                    view: {
+                        return AnyView(view())
+                    }
+                )
+            ],
             file: file
         )
     }
