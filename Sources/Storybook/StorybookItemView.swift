@@ -25,13 +25,22 @@ struct StorybookItemView: View {
                 }
             )
             .sheet(item: $selectedItem, onDismiss: nil, content: { item in
-                item.view()
+                controlWrappedView(item.view())
             })
         }
     }
     
     private func rowView(for item: StoryBookView) -> some View {
         navLink(for: item)
+    }
+    
+    @ViewBuilder
+    private func controlWrappedView<T: View>(_ view: T) -> some View {
+        if #available(iOS 14, *), #available(macOS 11, *) {
+            view.storybookControlOverlay()
+        } else {
+            view
+        }
     }
     
     #if os(macOS)
@@ -46,14 +55,15 @@ struct StorybookItemView: View {
     }
     
     private func navLink(for item: StoryBookView) -> some View {
-        return NavigationLink(
-            destination: {
-                item.view
-            },
-            label: {
-                Text(item.title)
-            }
-        )
+//        return NavigationLink(
+//            destination: {
+//                item.view
+//            },
+//            label: {
+//                Text(item.title)
+//            }
+//        )
+        EmptyView()
     }
     
     #else
@@ -63,7 +73,7 @@ struct StorybookItemView: View {
     }
     
     private func viewWithTitle<T: View>(_ title: String, view: T) -> some View {
-        view
+        controlWrappedView(view)
         .navigationBarTitle(
             Text(title),
             displayMode: .inline
