@@ -12,6 +12,7 @@ struct ControlConstant {
     static let subtitleSize: CGFloat = 12
     static let tinyText: CGFloat = 10
     static let rowSpacing: CGFloat = 8
+    static let rootId = "com.ajbartocci.storybook.rootId"
 }
 
 @available(iOS 13, *)

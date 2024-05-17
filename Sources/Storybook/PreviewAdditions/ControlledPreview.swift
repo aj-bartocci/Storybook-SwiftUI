@@ -9,14 +9,14 @@ import SwiftUI
 
 @available(iOS 13, *)
 @available(macOS 10.15, *)
-public struct ControlledPreview<
+struct ControlledPreview<
     StateValue, Controls: View, Component: View, Context: ControlledPreviewContext
 >: View {
     
     @Environment(\.isEmbeddedInStorybookContext) var isEmbeddedInStorybookContext
     private let preview: _ControlledPreview<StateValue, Controls, Component, Context>
     
-    public init(
+    init(
         configuration: ControlledPreviewConfiguration = .overlay,
         initialState: StateValue,
         context: Context,
@@ -32,7 +32,7 @@ public struct ControlledPreview<
         )
     }
     
-    public init(
+    init(
         configuration: ControlledPreviewConfiguration = .overlay,
         initialState: StateValue,
         @ViewBuilder component: @escaping (Binding<StateValue>, PreviewActions) -> Component,
@@ -49,7 +49,7 @@ public struct ControlledPreview<
         )
     }
     
-    public var body: some View {
+    var body: some View {
         if isEmbeddedInStorybookContext {
             preview
                 .preference(key: StorybookControlsEmbedPrefKey.self, value: true)
@@ -168,12 +168,11 @@ struct _ControlledPreview<
                         Button(action: {
                             self.showControlsOverlay = true
                         }, label: {
-                            Image(packageResource: "storybook_icon", ofType: "pdf")
+                            Image(packageResource: "storybook_icon", ofType: "png")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20)
                                 .padding(.horizontal, 20)
-                                .background(Color.orange)
                         })
                         .opacity(0.95)
                     }
@@ -234,7 +233,7 @@ struct _ControlledPreview<
 
 @available(iOS 13, *)
 @available(macOS 10.15, *)
-struct AppendControlsModifier3: ViewModifier {
+struct AppendControlsModifier: ViewModifier {
     
     @Environment(\.storybookControls) var envControls: [StorybookControlType]
     // Using a preference to determine if the view is already embedded within
@@ -275,108 +274,92 @@ struct AppendControlsModifier3: ViewModifier {
 @available(iOS 13, *)
 @available(macOS 10.15, *)
 public extension View {
-    func addBetterControls(_ controls: StorybookControlType...) -> some View {
-        self.modifier(AppendControlsModifier3(controls: controls))
+    
+    /**
+     Used to set the controls that apply to all views in Storybook. This should be set on the root StorybookCollection
+     */
+    func storybookSetGlobalControls(_ controls: StorybookControlType...) -> some View {
+        self.environment(\.storybookControls, controls)
+    }
+    
+    /**
+     Used to add controls to the current preview context.
+     */
+    func storybookAddControls(_ controls: StorybookControlType...) -> some View {
+        self.modifier(AppendControlsModifier(controls: controls))
     }
 }
 
-@available(iOS 14, *)
-@available(macOS 11, *)
-struct ExampleState {
-    var title = "Hello world"
+@available(iOS 13, *)
+@available(macOS 10.15, *)
+struct EmbeddedView: View {
+    var body: some View {
+        ControlledPreview(
+            initialState: Void(),
+            component: { _, _ in
+                Text("hello world")
+            },
+            controls: { _ in
+                Text("child control")
+            }
+        )
+        .storybookAddControls(.colorScheme)
+    }
 }
 
-@available(iOS 14, *)
-@available(macOS 11, *)
+
+@available(iOS 13, *)
+@available(macOS 10.15, *)
 #Preview {
     ControlledPreview(
-        initialState: ExampleState())
-    { state, _ in
-        Text(state.title.wrappedValue)
-            .frame(maxWidth: .infinity)
-            .frame(height: 400)
-            .background(Color.red)
-    } controls: { state in
-        TextField("Title", text: state.title)
-        Text("Control 1")
-        Text("Control 2")
-        Text("Control 3")
-    }
-    .addBetterControls(.dynamicType)
-    .addBetterControls(.colorScheme)
-    .addBetterControls(.screenSize)
-    .addBetterControls(.documentationLink(title: "Jira", url: "", icon: .jira))
-    .addBetterControls(.documentationLink(title: "Figma", url: "", icon: .figma))
-}
-
-@available(iOS 14, *)
-@available(macOS 11, *)
-struct StatefulView: View {
-    
-    @State private var textInput = ""
-    
-    var body: some View {
-        TextField("Input", text: $textInput)
-    }
-}
-
-@available(iOS 14, *)
-@available(macOS 11, *)
-#Preview {
-//    Text("Hello world!!!")
-    StatefulView()
-        .frame(maxWidth: .infinity)
-        .frame(height: 400)
-        .background(Color.red)
-        .addBetterControls(.documentationLink(title: "Jira1", url: "", icon: .jira))
-        .addBetterControls(.dynamicType)
-        .addBetterControls(.colorScheme)
-        .addBetterControls(.screenSize)
-        .addBetterControls(.documentationLink(title: "Jira", url: "", icon: .jira))
-        .addBetterControls(.documentationLink(title: "Figma!", url: "", icon: .figma))
-}
-
-@available(iOS 14, *)
-@available(macOS 11, *)
-struct TestContainer: View {
-    var body: some View {
-        Text("Root")
-            .environment(\.isEmbeddedInControls, true)
-            .preference(key: StorybookControlsEmbedPrefKey.self, value: true)
-    }
-}
-
-@available(iOS 14, *)
-@available(macOS 11, *)
-struct TestContainerModifier: ViewModifier {
-    
-    @Environment(\.isEmbeddedInControls) var isEmbeddedInControls
-    @State var isPrefEmbedded = false
-    
-    @ViewBuilder
-    var bg: some View {
-        if isEmbeddedInControls {
-            Color.green
-        } else if isPrefEmbedded {
-            Color.blue
-        } else {
-            Color.yellow
+        initialState: Void(),
+        component: { _, _ in
+            EmbeddedView()
+        },
+        controls: { _ in
+            Text("root control")
         }
-    }
-    
-    func body(content: Content) -> some View {
-        content
-            .background(bg)
-            .onPreferenceChange(StorybookControlsEmbedPrefKey.self, perform: { value in
-                isPrefEmbedded = value
-            })
+    )
+    .storybookAddControls(.dynamicType)
+    .storybookAddControls(.screenSize)
+}
+
+@available(iOS 13, *)
+@available(macOS 10.15, *)
+struct SomeFeature: View {
+    let title: String
+    var body: some View {
+        Text(title)
     }
 }
 
-@available(iOS 14, *)
-@available(macOS 11, *)
+@available(iOS 13, *)
+@available(macOS 10.15, *)
+struct ControlledSomeFeature: View {
+    @State var title = "Hello World"
+    
+    var body: some View {
+        SomeFeature(title: title)
+            .storybookAddControls(.custom(control: .init(controlId: "ControlledSomeFeature", view: {
+                TextField("Title", text: $title)
+            })))
+    }
+}
+
+@available(iOS 13, *)
+@available(macOS 10.15, *)
+struct ExamplePreview: View {
+    var body: some View {
+        ControlledSomeFeature()
+        .storybookAddControls(.colorScheme)
+        .storybookAddControls(.dynamicType)
+        .storybookAddControls(.screenSize)
+    }
+}
+
+@available(iOS 13, *)
+@available(macOS 10.15, *)
 #Preview {
-    TestContainer()
-        .modifier(TestContainerModifier())
-        .modifier(TestContainerModifier())
+    ExamplePreview()
+        .storybookAddControls(.custom(control: .init(controlId: ControlConstant.rootId, view: { EmptyView() })))
 }

@@ -36,13 +36,7 @@ struct StorybookItemView: View {
     
     @ViewBuilder
     private func controlWrappedView<T: View>(_ view: T) -> some View {
-        ControlledPreview(
-            initialState: Void(),
-            component: { _, _ in
-                view
-            },
-            controls: { _ in }
-        )
+        view.storybookAddControls(.custom(control: .init(controlId: ControlConstant.rootId, view: { EmptyView() })))
     }
     
     #if os(macOS)
