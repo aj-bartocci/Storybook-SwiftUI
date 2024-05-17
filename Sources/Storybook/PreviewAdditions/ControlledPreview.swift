@@ -280,105 +280,103 @@ public extension View {
     }
 }
 
-//@available(iOS 14, *)
-//@available(macOS 11, *)
-//struct ExampleState {
-//    var title = "Hello world"
-//}
-//
-//@available(iOS 14, *)
-//@available(macOS 11, *)
-//#Preview {
-//    ControlledPreview(
-//        initialState: ExampleState())
-//    { state, _ in
-//        Text(state.title.wrappedValue)
-//            .frame(maxWidth: .infinity)
-//            .frame(height: 400)
-//            .background(Color.red)
-//    } controls: { state in
-//        TextField("Title", text: state.title)
-//        Text("Control 1")
-//        Text("Control 2")
-//        Text("Control 3")
-//    }
-//    .addBetterControls(.dynamicType)
-//    .addBetterControls(.colorScheme)
-//    .addBetterControls(.screenSize)
-//    .addBetterControls(.test)
-//    .addBetterControls(.documentationLink(title: "Jira", url: "", icon: .jira))
-//    .addBetterControls(.documentationLink(title: "Figma", url: "", icon: .figma))
-//}
-//
-//@available(iOS 14, *)
-//@available(macOS 11, *)
-//struct StatefulView: View {
-//    
-//    @State private var textInput = ""
-//    
-//    var body: some View {
-//        TextField("Input", text: $textInput)
-//    }
-//}
-//
-//@available(iOS 14, *)
-//@available(macOS 11, *)
-//#Preview {
-////    Text("Hello world!!!")
-//    StatefulView()
-//        .frame(maxWidth: .infinity)
-//        .frame(height: 400)
-//        .background(Color.red)
-//        .addBetterControls(.documentationLink(title: "Jira1", url: "", icon: .jira))
-//        .addBetterControls(.dynamicType)
-//        .addBetterControls(.colorScheme)
-//        .addBetterControls(.screenSize)
-//        .addBetterControls(.test)
-//        .addBetterControls(.documentationLink(title: "Jira", url: "", icon: .jira))
-//        .addBetterControls(.documentationLink(title: "Figma!", url: "", icon: .figma))
-//}
-//
-//@available(iOS 14, *)
-//@available(macOS 11, *)
-//struct TestContainer: View {
-//    var body: some View {
-//        Text("Root")
-//            .environment(\.isEmbeddedInControls, true)
-//            .preference(key: StorybookControlsEmbedPrefKey.self, value: true)
-//    }
-//}
-//
-//@available(iOS 14, *)
-//@available(macOS 11, *)
-//struct TestContainerModifier: ViewModifier {
-//    
-//    @Environment(\.isEmbeddedInControls) var isEmbeddedInControls
-//    @State var isPrefEmbedded = false
-//    
-//    @ViewBuilder
-//    var bg: some View {
-//        if isEmbeddedInControls {
-//            Color.green
-//        } else if isPrefEmbedded {
-//            Color.blue
-//        } else {
-//            Color.yellow
-//        }
-//    }
-//    
-//    func body(content: Content) -> some View {
-//        content
-//            .background(bg)
-//            .onPreferenceChange(StorybookControlsEmbedPrefKey.self, perform: { value in
-//                isPrefEmbedded = value
-//            })
-//    }
-//}
-//
-//@available(iOS 14, *)
-//@available(macOS 11, *)
-//#Preview {
-//    TestContainer()
-//        .modifier(TestContainerModifier())
-//        .modifier(TestContainerModifier())
-//}
+@available(iOS 14, *)
+@available(macOS 11, *)
+struct ExampleState {
+    var title = "Hello world"
+}
+
+@available(iOS 14, *)
+@available(macOS 11, *)
+#Preview {
+    ControlledPreview(
+        initialState: ExampleState())
+    { state, _ in
+        Text(state.title.wrappedValue)
+            .frame(maxWidth: .infinity)
+            .frame(height: 400)
+            .background(Color.red)
+    } controls: { state in
+        TextField("Title", text: state.title)
+        Text("Control 1")
+        Text("Control 2")
+        Text("Control 3")
+    }
+    .addBetterControls(.dynamicType)
+    .addBetterControls(.colorScheme)
+    .addBetterControls(.screenSize)
+    .addBetterControls(.documentationLink(title: "Jira", url: "", icon: .jira))
+    .addBetterControls(.documentationLink(title: "Figma", url: "", icon: .figma))
+}
+
+@available(iOS 14, *)
+@available(macOS 11, *)
+struct StatefulView: View {
+    
+    @State private var textInput = ""
+    
+    var body: some View {
+        TextField("Input", text: $textInput)
+    }
+}
+
+@available(iOS 14, *)
+@available(macOS 11, *)
+#Preview {
+//    Text("Hello world!!!")
+    StatefulView()
+        .frame(maxWidth: .infinity)
+        .frame(height: 400)
+        .background(Color.red)
+        .addBetterControls(.documentationLink(title: "Jira1", url: "", icon: .jira))
+        .addBetterControls(.dynamicType)
+        .addBetterControls(.colorScheme)
+        .addBetterControls(.screenSize)
+        .addBetterControls(.documentationLink(title: "Jira", url: "", icon: .jira))
+        .addBetterControls(.documentationLink(title: "Figma!", url: "", icon: .figma))
+}
+
+@available(iOS 14, *)
+@available(macOS 11, *)
+struct TestContainer: View {
+    var body: some View {
+        Text("Root")
+            .environment(\.isEmbeddedInControls, true)
+            .preference(key: StorybookControlsEmbedPrefKey.self, value: true)
+    }
+}
+
+@available(iOS 14, *)
+@available(macOS 11, *)
+struct TestContainerModifier: ViewModifier {
+    
+    @Environment(\.isEmbeddedInControls) var isEmbeddedInControls
+    @State var isPrefEmbedded = false
+    
+    @ViewBuilder
+    var bg: some View {
+        if isEmbeddedInControls {
+            Color.green
+        } else if isPrefEmbedded {
+            Color.blue
+        } else {
+            Color.yellow
+        }
+    }
+    
+    func body(content: Content) -> some View {
+        content
+            .background(bg)
+            .onPreferenceChange(StorybookControlsEmbedPrefKey.self, perform: { value in
+                isPrefEmbedded = value
+            })
+    }
+}
+
+@available(iOS 14, *)
+@available(macOS 11, *)
+#Preview {
+    TestContainer()
+        .modifier(TestContainerModifier())
+        .modifier(TestContainerModifier())
+}

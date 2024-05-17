@@ -36,11 +36,13 @@ struct StorybookItemView: View {
     
     @ViewBuilder
     private func controlWrappedView<T: View>(_ view: T) -> some View {
-        if #available(iOS 14, *), #available(macOS 11, *) {
-            view.storybookControlOverlay()
-        } else {
-            view
-        }
+        ControlledPreview(
+            initialState: Void(),
+            component: { _, _ in
+                view
+            },
+            controls: { _ in }
+        )
     }
     
     #if os(macOS)

@@ -1,20 +1,15 @@
 import Combine
 import SwiftUI
 
-// workaround for @StateObject
 @available(iOS 13, *)
-struct ViewModelWrapper<V: View, ViewModel: ObservableObject>: View {
-    private let contentView: V
-    @State private var contentViewModel: ViewModel
-
-    init(contentView: @autoclosure () -> V, vm: @autoclosure () -> ViewModel) {
-        self._contentViewModel = State(initialValue: vm())
-        self.contentView = contentView()
-    }
-
-    var body: some View {
-        contentView
-        .environmentObject(contentViewModel)
+@available(macOS 10.15, *)
+public struct StorybookControlView {
+    let controlId: String
+    let view: AnyView
+    
+    public init<T: View>(controlId: String, @ViewBuilder view: () -> T) {
+        self.controlId = controlId
+        self.view = AnyView(view())
     }
 }
 
