@@ -69,7 +69,7 @@ struct StorybookItemView: View {
     }
     
     private func viewWithTitle<T: View>(_ title: String, view: T) -> some View {
-        controlWrappedView(view)
+        view
         .navigationBarTitle(
             Text(title),
             displayMode: .inline
