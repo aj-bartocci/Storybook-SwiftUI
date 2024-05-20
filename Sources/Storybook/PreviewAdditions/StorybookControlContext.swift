@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 // Lazy copy paste for 13 vs 14 since @StateObject is only 14
@@ -117,3 +118,4 @@ public struct StorybookControlContext<Content: View>: View {
             .preference(key: StorybookControlsEmbedPrefKey.self, value: true)
     }
 }
+#endif

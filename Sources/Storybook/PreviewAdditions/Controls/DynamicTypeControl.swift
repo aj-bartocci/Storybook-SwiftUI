@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13, *)
@@ -132,3 +133,4 @@ public struct DynamicTypeControl: View {
         #endif
     }
 }
+#endif

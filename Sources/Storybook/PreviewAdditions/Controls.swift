@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import Combine
 import SwiftUI
 
@@ -69,3 +70,4 @@ public enum StorybookControlType: Identifiable, Equatable {
         }
     }
 }
+#endif

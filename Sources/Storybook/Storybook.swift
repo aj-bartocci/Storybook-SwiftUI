@@ -5,6 +5,7 @@
 //  Created by AJ Bartocci on 4/14/22.
 //
 
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13.0, *)
@@ -40,3 +41,4 @@ public class Storybook: NSObject {
         return data
     }
 }
+#endif

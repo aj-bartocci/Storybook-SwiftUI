@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 struct ControlConstant {
@@ -39,3 +40,4 @@ extension View {
         #endif
     }
 }
+#endif

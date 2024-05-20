@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13, *)
@@ -56,3 +57,4 @@ extension EnvironmentValues {
         set { self[StorybookContextEmbedKey.self] = newValue }
     }
 }
+#endif

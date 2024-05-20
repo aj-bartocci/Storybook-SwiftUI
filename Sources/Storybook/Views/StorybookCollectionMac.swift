@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 #if os(macOS)
 import SwiftUI
 
@@ -107,4 +108,5 @@ public struct StorybookCollection: View {
         })
     }
 }
+#endif
 #endif

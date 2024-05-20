@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13, *)
@@ -282,3 +283,4 @@ public extension View {
         self.modifier(AppendControlsModifier(controls: controls))
     }
 }
+#endif

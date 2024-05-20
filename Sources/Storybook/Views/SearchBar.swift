@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 #if os(iOS)
@@ -78,4 +79,5 @@ struct SearchBar: NSViewRepresentable {
         }
     }
 }
+#endif
 #endif

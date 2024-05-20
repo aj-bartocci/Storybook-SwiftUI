@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 public enum ColorScheme {
@@ -41,3 +42,4 @@ public struct ColorSchemeControl: View {
         }
     }
 }
+#endif

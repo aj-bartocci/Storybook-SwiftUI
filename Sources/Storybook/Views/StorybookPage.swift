@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13.0, *)
@@ -133,3 +134,4 @@ public class StorybookPage: NSObject, Identifiable {
         self.init(folder: directory, views: [view], file: file)
     }
 }
+#endif

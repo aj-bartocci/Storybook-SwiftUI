@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13, *)
@@ -117,3 +118,4 @@ public struct ScreenSizeControl: View {
         .internalTitleFont()
     }
 }
+#endif

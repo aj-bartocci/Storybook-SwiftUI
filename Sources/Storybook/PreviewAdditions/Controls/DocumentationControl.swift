@@ -1,3 +1,4 @@
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 13, *)
@@ -69,3 +70,4 @@ public struct DocumentationControl: View {
         }
     }
 }
+#endif
