@@ -138,7 +138,7 @@ struct _ControlledPreview<
                 .padding(.horizontal)
             }
         }
-        .background(systemBackgroundColor.opacity(0.7))
+        .background(systemBackgroundColor.opacity(0.8))
         .opacity(showControlsOverlay ? 1.0 : 0.0)
     }
     
