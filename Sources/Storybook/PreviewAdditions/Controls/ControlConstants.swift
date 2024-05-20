@@ -1,10 +1,3 @@
-//
-//  ControlConstants.swift
-//  
-//
-//  Created by AJ Bartocci on 5/6/24.
-//
-
 import SwiftUI
 
 struct ControlConstant {
@@ -16,7 +9,7 @@ struct ControlConstant {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 extension View {
     func internalTitleFont() -> some View {
         self.font(.system(size: ControlConstant.titleSize))

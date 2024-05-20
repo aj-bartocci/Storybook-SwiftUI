@@ -1,17 +1,28 @@
-#if canImport(SwiftUI)
+//
+//  Storybook.swift
+//
+//
+//  Created by AJ Bartocci on 4/14/22.
+//
 
-import Foundation
+import SwiftUI
 
 @available(iOS 13.0, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public class Storybook: NSObject {
-    static func build() -> [StorybookChapter] {
+    
+    /// Renders the storybook, alternatively you can use StorybookCollection() direclty
+    public static func render() -> some View {
+        StorybookCollection()
+    }
+        
+    static func build() -> StorybookCollectionData {
         var count: CUnsignedInt = 0
+        let data = StorybookCollectionData()
         guard let methods = class_copyPropertyList(object_getClass(Storybook.self), &count) else {
             print("No previews were found as static members")
-            return []
+            return data
         }
-        var chapters = [String: [StorybookPage]]()
         for i in 0 ..< count {
             let selector = property_getName(methods.advanced(by: Int(i)).pointee)
             if let key = String(cString: selector, encoding: .utf8) {
@@ -19,18 +30,13 @@ public class Storybook: NSObject {
                     print("Cannot load view: \(key)")
                     continue
                 }
-                if var pages = chapters[preview.chapter] {
-                    pages.append(preview)
-                    chapters[preview.chapter] = pages
+                if let directory = preview.directory {
+                    data.addEntry(folder: directory, views: preview.views, file: preview.file)
                 } else {
-                    chapters[preview.chapter] = [preview]
+                    data.addEntry(folder: "\(preview.chapter)/\(preview.title)", views: preview.views, file: preview.file)
                 }
             }
         }
-        return chapters.map { (title, pages) in
-            return StorybookChapter(title: title, pages: pages.sorted(by: { $0.title < $1.title }))
-        }.sorted(by: { $0.title < $1.title })
+        return data
     }
 }
-
-#endif

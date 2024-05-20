@@ -1,32 +1,25 @@
-//
-//  ControlHelpers.swift
-//
-//
-//  Created by AJ Bartocci on 5/6/24.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 enum StorybookControlsKey: EnvironmentKey {
     static var defaultValue: [StorybookControlType] = []
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 enum StorybookControlsEmbedEnvKey: EnvironmentKey {
     static var defaultValue: Bool = false
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 enum StorybookContextEmbedKey: EnvironmentKey {
     static var defaultValue: Bool = false
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 struct StorybookControlsEmbedPrefKey: PreferenceKey {
     static var defaultValue: Bool = false
     
@@ -36,7 +29,7 @@ struct StorybookControlsEmbedPrefKey: PreferenceKey {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 enum StorybookControlsPrefKey: PreferenceKey {
     static var defaultValue: [StorybookControlType] = []
     
@@ -46,7 +39,7 @@ enum StorybookControlsPrefKey: PreferenceKey {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 extension EnvironmentValues {
     var storybookControls: [StorybookControlType] {
         get { self[StorybookControlsKey.self] }

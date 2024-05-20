@@ -1,14 +1,7 @@
-//
-//  ControlledPreview.swift
-//
-//
-//  Created by AJ Bartocci on 5/16/24.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 struct ControlledPreview<
     StateValue, Controls: View, Component: View, Context: ControlledPreviewContext
 >: View {
@@ -63,7 +56,7 @@ struct ControlledPreview<
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 struct _ControlledPreview<
     StateValue, Controls: View, Component: View, Context: ControlledPreviewContext
 >: View {
@@ -232,7 +225,7 @@ struct _ControlledPreview<
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 struct AppendControlsModifier: ViewModifier {
     
     @Environment(\.storybookControls) var envControls: [StorybookControlType]
@@ -272,7 +265,7 @@ struct AppendControlsModifier: ViewModifier {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public extension View {
     
     /**
@@ -288,78 +281,4 @@ public extension View {
     func storybookAddControls(_ controls: StorybookControlType...) -> some View {
         self.modifier(AppendControlsModifier(controls: controls))
     }
-}
-
-@available(iOS 13, *)
-@available(macOS 10.15, *)
-struct EmbeddedView: View {
-    var body: some View {
-        ControlledPreview(
-            initialState: Void(),
-            component: { _, _ in
-                Text("hello world")
-            },
-            controls: { _ in
-                Text("child control")
-            }
-        )
-        .storybookAddControls(.colorScheme)
-    }
-}
-
-
-@available(iOS 13, *)
-@available(macOS 10.15, *)
-#Preview {
-    ControlledPreview(
-        initialState: Void(),
-        component: { _, _ in
-            EmbeddedView()
-        },
-        controls: { _ in
-            Text("root control")
-        }
-    )
-    .storybookAddControls(.dynamicType)
-    .storybookAddControls(.screenSize)
-}
-
-@available(iOS 13, *)
-@available(macOS 10.15, *)
-struct SomeFeature: View {
-    let title: String
-    var body: some View {
-        Text(title)
-    }
-}
-
-@available(iOS 13, *)
-@available(macOS 10.15, *)
-struct ControlledSomeFeature: View {
-    @State var title = "Hello World"
-    
-    var body: some View {
-        SomeFeature(title: title)
-            .storybookAddControls(.custom(control: .init(controlId: "ControlledSomeFeature", view: {
-                TextField("Title", text: $title)
-            })))
-    }
-}
-
-@available(iOS 13, *)
-@available(macOS 10.15, *)
-struct ExamplePreview: View {
-    var body: some View {
-        ControlledSomeFeature()
-        .storybookAddControls(.colorScheme)
-        .storybookAddControls(.dynamicType)
-        .storybookAddControls(.screenSize)
-    }
-}
-
-@available(iOS 13, *)
-@available(macOS 10.15, *)
-#Preview {
-    ExamplePreview()
-        .storybookAddControls(.custom(control: .init(controlId: ControlConstant.rootId, view: { EmptyView() })))
 }

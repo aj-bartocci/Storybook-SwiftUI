@@ -1,14 +1,7 @@
-//
-//  ControlledPreview+Utils.swift
-//
-//
-//  Created by AJ Bartocci on 5/17/24.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public class PreviewActions: ObservableObject {
     @Published private (set) var message: String?
     
@@ -25,7 +18,7 @@ struct ButtonMessage: Identifiable {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 class GenericObservableObject<T>: ObservableObject {
     @Published var value: T {
         didSet {

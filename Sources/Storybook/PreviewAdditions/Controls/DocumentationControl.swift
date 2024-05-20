@@ -1,14 +1,7 @@
-//
-//  DocumentationControl.swift
-//  
-//
-//  Created by AJ Bartocci on 5/15/24.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 extension StorybookControlType.IconType {
     var icon: Image {
         switch self {
@@ -23,7 +16,7 @@ extension StorybookControlType.IconType {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 extension View {
     // since the environment value is 14+ just fall back to 13 functionality
     // can clean this up if problems come up
@@ -37,7 +30,7 @@ extension View {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public struct DocumentationControl: View {
     
     let icon: Image
@@ -46,6 +39,7 @@ public struct DocumentationControl: View {
     
     init(icon: Image?, title: String, url: String) {
         self.icon = icon ?? Image(systemName: "link")
+        
         self.title = title
         self.url = URL(string: url)
     }

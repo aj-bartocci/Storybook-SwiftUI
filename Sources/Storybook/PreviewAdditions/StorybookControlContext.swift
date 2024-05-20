@@ -1,10 +1,3 @@
-//
-//  StorybookControlContext.swift
-//
-//
-//  Created by AJ Bartocci on 5/17/24.
-//
-
 import SwiftUI
 
 // Lazy copy paste for 13 vs 14 since @StateObject is only 14
@@ -13,7 +6,7 @@ import SwiftUI
 // for some reason or another
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 private struct StorybookControlContext13<Content: View>: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var colorSchemeModel = ColorSchemeControlModel()
@@ -82,7 +75,7 @@ private struct StorybookControlContext14<Content: View>: View {
  StorybookControlContext is only needed if you are doing something custom without ControlledPreview being the container.
  */
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public struct StorybookControlContext<Content: View>: View {
     
     let content: Content
@@ -92,6 +85,7 @@ public struct StorybookControlContext<Content: View>: View {
     
     @ViewBuilder
     var contextualizedContent: some View {
+        #if os(iOS)
         if #available(iOS 14, *) {
             StorybookControlContext14 {
                 content
@@ -101,6 +95,19 @@ public struct StorybookControlContext<Content: View>: View {
                 content
             }
         }
+        #elseif os(macOS)
+        if #available(macOS 11, *) {
+            StorybookControlContext14 {
+                content
+            }
+        } else {
+            StorybookControlContext13 {
+                content
+            }
+        }
+        #else
+        Text("Unsupported platform")
+        #endif
     }
         
     public var body: some View {

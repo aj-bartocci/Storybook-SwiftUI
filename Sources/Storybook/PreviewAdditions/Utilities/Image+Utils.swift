@@ -1,14 +1,7 @@
-//
-//  Image+Utils.swift
-//  
-//
-//  Created by AJ Bartocci on 5/15/24.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 extension Image {
     init(packageResource name: String, ofType type: String) {
         #if canImport(UIKit)

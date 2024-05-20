@@ -1,20 +1,13 @@
-//
-//  DynamicTypeControl.swift
-//  
-//
-//  Created by AJ Bartocci on 5/6/24.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public class DynamicTypeControlModel: ObservableObject {
     @Published public var fontSize: DynamicTypeControl.ContentSize = .large
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public struct DynamicTypeControl: View {
     public enum ContentSize: Int {
         case extraSmall
@@ -102,6 +95,7 @@ public struct DynamicTypeControl: View {
     public init() { }
     
     public var body: some View {
+        #if os(iOS)
         VStack {
             HStack {
                 Text("Dynamic Font Size:")
@@ -130,5 +124,11 @@ public struct DynamicTypeControl: View {
         }
         .padding(.top, ControlConstant.rowSpacing)
         .internalTitleFont()
+        #else
+        // For some reason dynamic type doesn't work on mac
+        // even in the previews in xcode Apple doesn't provide
+        // a control for it...
+        Text("Dynamic type is not supported")
+        #endif
     }
 }

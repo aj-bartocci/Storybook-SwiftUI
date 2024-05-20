@@ -1,14 +1,7 @@
-//
-//  ScreenSizeControl.swift
-//
-//
-//  Created by AJ Bartocci on 5/6/24.
-//
-
 import SwiftUI
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public class ScreenSizeControlModel: ObservableObject {
     @Published fileprivate var screenSize: ScreenSizeControl.PhoneModel = .current
     @Published var count = 0
@@ -29,7 +22,7 @@ public class ScreenSizeControlModel: ObservableObject {
 }
 
 @available(iOS 13, *)
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 public struct ScreenSizeControl: View {
     
     public enum PhoneModel: Int {
