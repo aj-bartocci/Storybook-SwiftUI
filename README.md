@@ -150,6 +150,8 @@ extension Storybook {
 ### Example custom Control
 Custom controls can easily be added to the Storybook control overlay. Here is an example of a control to change the title of a view. 
 
+*Important:* If the control has state that needs to update that is not text you must update the id when it changes. For example with a toggle you must update the id when the toggle changes. Hopefully there will be a cleaner solution in the future.  
+
 ```swift
 // The View used in the App
 @available(iOS 13.0, *)
@@ -165,14 +167,24 @@ struct SomeView: View {
 @available(iOS 13.0, *)
 struct ControlledSomeView: View {
     @State var title = "Hello, World!"
+    @State var isToggled = false
+
+    var controlId: String {
+        return "SomeViewControl" + isToggled.description
+    }
     
     var body: some View {
         SomeView(title: title)
             .storybookAddControls(
                 .custom(StorybookControl(
-                    id: "SomeViewControl",
+                    id: controlId,
                     view: {
-                        TextField("Title", text: $title)
+                        VStack {
+                            TextField("Title", text: $title)
+                            Toggle(isOn: $isToggled) {
+                                Text("Some Toggle")
+                            }
+                        }
                     }
                 ))
             )
