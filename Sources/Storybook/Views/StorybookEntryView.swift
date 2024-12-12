@@ -6,6 +6,7 @@ import SwiftUI
 struct StorybookDestinationView: View {
     
     let destinations: [StorybookEntry.Destination]
+    @Environment(\.storybookControls) private var envControls
     @State private var selectedView: StoryBookView?
     
     func rowLabel(title: String, file: String?) -> some View {
@@ -51,9 +52,11 @@ struct StorybookDestinationView: View {
         NavigationLink(destination: {
             #if os(iOS)
                 StorybookDestinationView(destinations: entry.destinations)
+                    .environment(\.storybookControls, envControls)
                     .navigationBarTitle(entry.title)
             #else
                 StorybookDestinationView(destinations: entry.destinations)
+                    .environment(\.storybookControls, envControls)
             #endif
         }, label: {
             rowLabel(title: entry.title, file: entry.file)
@@ -73,6 +76,7 @@ struct StorybookDestinationView: View {
         }
         .sheet(item: $selectedView, onDismiss: nil, content: { view in
             previewContent(for: view)
+                .environment(\.storybookControls, envControls)
         })
     }
 }
