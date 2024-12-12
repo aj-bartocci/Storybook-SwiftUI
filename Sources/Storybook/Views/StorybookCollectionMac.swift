@@ -9,6 +9,7 @@ public struct StorybookCollection: View {
     @State var selectedView: StoryBookView?
     @State var collection: StorybookCollectionData = Storybook.build()
     @State var searchText = ""
+    @Environment(\.storybookControls) private var envControls
     let embedInNav: Bool
     
     public init(embedInNav: Bool = true) {
@@ -40,6 +41,7 @@ public struct StorybookCollection: View {
     private func navLink(for entry: StorybookEntry) -> some View {
         NavigationLink(destination: {
             StorybookDestinationView(destinations: entry.destinations)
+                .environment(\.storybookControls, envControls)
         }, label: {
             rowLabel(title: entry.title, file: entry.file)
         })
@@ -105,6 +107,7 @@ public struct StorybookCollection: View {
         }
         .sheet(item: $selectedView, onDismiss: nil, content: { view in
             previewContent(for: view)
+                .environment(\.storybookControls, envControls)
         })
     }
 }
