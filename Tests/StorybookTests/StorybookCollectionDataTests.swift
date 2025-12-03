@@ -20,25 +20,29 @@ final class StorybookCollectionDataTests: XCTestCase {
             folder: "root/path1",
             views: [
                 Text("Foo").storybookTitle("Preview 1"),
-            ]
+            ],
+            tags: Set()
         )
         sut.addEntry(
             folder: "/root/path1/",
             views: [
                 Text("Foo").storybookTitle("Preview 2")
-            ]
+            ],
+            tags: Set()
         )
         sut.addEntry(
             folder: "/root/path1",
             views: [
                 Text("Foo").storybookTitle("Preview 3")
-            ]
+            ],
+            tags: Set()
         )
         sut.addEntry(
             folder: "root/path1/",
             views: [
                 Text("Foo").storybookTitle("Preview 4"),
-            ]
+            ],
+            tags: Set()
         )
         let destination = sut.root["root"]?.children["path1"]
         XCTAssertEqual(destination?.views.count, 4)
@@ -48,15 +52,18 @@ final class StorybookCollectionDataTests: XCTestCase {
         let sut = StorybookCollectionData()
         sut.addEntry(
             folder: "/",
-            views: [ Text("Foo").storybookTitle("Preview 1") ]
+            views: [ Text("Foo").storybookTitle("Preview 1") ],
+            tags: Set()
         )
         sut.addEntry(
             folder: "",
-            views: [ Text("Foo").storybookTitle("Preview 2") ]
+            views: [ Text("Foo").storybookTitle("Preview 2") ],
+            tags: Set()
         )
         sut.addEntry(
             folder: " ",
-            views: [ Text("Foo").storybookTitle("Preview 3") ]
+            views: [ Text("Foo").storybookTitle("Preview 3") ],
+            tags: Set()
         )
         let views = sut.root["* Uncategorized"]?.views
         XCTAssertEqual(views?.count, 3)
@@ -69,7 +76,8 @@ final class StorybookCollectionDataTests: XCTestCase {
             views: [
                 Text("Foo").storybookTitle("Preview 1"),
                 Text("Foo").storybookTitle("Preview 2")
-            ]
+            ],
+            tags: Set()
         )
         let root = sut.root["root"]
         XCTAssertEqual(root?.views.count, 2)
@@ -82,14 +90,16 @@ final class StorybookCollectionDataTests: XCTestCase {
             views: [
                 Text("Foo").storybookTitle("Preview 1"),
                 Text("Foo").storybookTitle("Preview 2")
-            ]
+            ],
+            tags: Set()
         )
         sut.addEntry(
             folder: "/root/",
             views: [
                 Text("Foo").storybookTitle("Preview 3"),
                 Text("Foo").storybookTitle("Preview 4")
-            ]
+            ],
+            tags: Set()
         )
         let root = sut.root["root"]
         XCTAssertEqual(root?.views.count, 4)
@@ -102,7 +112,8 @@ final class StorybookCollectionDataTests: XCTestCase {
             views: [
                 Text("Foo").storybookTitle("Preview 1"),
                 Text("Foo").storybookTitle("Preview 2")
-            ]
+            ],
+            tags: Set()
         )
         let root = sut.root["root"]
         XCTAssertEqual(root?.views.count, 0)
@@ -119,14 +130,16 @@ final class StorybookCollectionDataTests: XCTestCase {
             views: [
                 Text("Foo").storybookTitle("Preview 1"),
                 Text("Foo").storybookTitle("Preview 2")
-            ]
+            ],
+            tags: Set()
         )
         sut.addEntry(
             folder: "/root/path1/path2/",
             views: [
                 Text("Foo").storybookTitle("Preview 3"),
                 Text("Foo").storybookTitle("Preview 4")
-            ]
+            ],
+            tags: Set()
         )
         let root = sut.root["root"]
         XCTAssertEqual(root?.views.count, 0)
@@ -143,14 +156,16 @@ final class StorybookCollectionDataTests: XCTestCase {
             views: [
                 Text("Foo").storybookTitle("Preview 1"),
                 Text("Foo").storybookTitle("Preview 2")
-            ]
+            ],
+            tags: Set()
         )
         sut.addEntry(
             folder: "/root/path1/",
             views: [
                 Text("Foo").storybookTitle("Preview 3"),
                 Text("Foo").storybookTitle("Preview 4")
-            ]
+            ],
+            tags: Set()
         )
         let root = sut.root["root"]
         XCTAssertEqual(root?.views.count, 0)
@@ -159,6 +174,14 @@ final class StorybookCollectionDataTests: XCTestCase {
         let path2 = path1?.children["path2"]
         XCTAssertEqual(path2?.views.count, 2)
     }
+    
+    // making sure tags on the parent entry get added to the views
+    
+    // add tests for search
+    // - no tags
+        // - folder and component results
+    // - tags
+        // only component results
     
     // Took this functionality out but might add it back
 //    func test_addEntry_AddsFileToLeafNode() throws {

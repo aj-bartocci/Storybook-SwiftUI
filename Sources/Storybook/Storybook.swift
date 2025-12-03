@@ -32,9 +32,19 @@ public class Storybook: NSObject {
                     continue
                 }
                 if let directory = preview.directory {
-                    data.addEntry(folder: directory, views: preview.views, file: preview.file)
+                    data.addEntry(
+                        folder: directory,
+                        views: preview.views,
+                        tags: preview.tags,
+                        file: preview.file
+                    )
                 } else {
-                    data.addEntry(folder: "\(preview.chapter)/\(preview.title)", views: preview.views, file: preview.file)
+                    data.addEntry(
+                        folder: "\(preview.chapter)/\(preview.title)",
+                        views: preview.views,
+                        tags: preview.tags,
+                        file: preview.file
+                    )
                 }
             }
         }

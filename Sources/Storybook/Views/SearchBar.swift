@@ -9,12 +9,15 @@ struct SearchBar: UIViewRepresentable {
     
     func makeUIView(context: Context) -> UISearchBar {
         let searchBar = UISearchBar()
+        searchBar.placeholder = "Search - use # for tags"
         searchBar.delegate = context.coordinator
         return searchBar
     }
     
     func updateUIView(_ searchBar: UISearchBar, context: Context) {
-        
+        if searchBar.text != searchText {
+            searchBar.text = searchText
+        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -49,13 +52,16 @@ struct SearchBar: NSViewRepresentable {
     
     func makeNSView(context: Context) -> NSSearchField {
         let searchBar = NSSearchField()
+        searchBar.placeholderString = "Search - use # for tags"
         searchBar.delegate = context.coordinator
         context.coordinator.searchBar = searchBar
         return searchBar
     }
     
-    func updateNSView(_ nsView: NSSearchField, context: Context) {
-        
+    func updateNSView(_ searchBar: NSSearchField, context: Context) {
+        if searchBar.stringValue != searchText {
+            searchBar.stringValue = searchText
+        }
     }
     
     func makeCoordinator() -> Coordinator {

@@ -4,7 +4,7 @@ import SwiftUI
 @available(iOS 13, *)
 @available(macOS 11, *)
 public class PreviewActions: ObservableObject {
-    @Published private (set) var message: String?
+    @Published private(set) var message: String?
     
     public func tappedButton(message: String) {
         self.message = message
