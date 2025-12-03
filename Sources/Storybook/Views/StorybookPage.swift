@@ -7,15 +7,18 @@ public struct StoryBookView: Identifiable {
     public let id = UUID()
     let title: String
     let file: String
+    let tags: Set<String>
     let view: () -> AnyView
     
     public init<T: View>(
         title: String,
+        tags: Set<String> = Set(),
         view: @autoclosure @escaping () -> T,
         file: String = #file
     ) {
         self.init(
-            title: title, 
+            title: title,
+            tags: tags,
             view: {
                 return AnyView(view())
             }, 
@@ -25,13 +28,33 @@ public struct StoryBookView: Identifiable {
     
     init(
         title: String,
+        tags: Set<String> = Set(),
         view: @escaping () -> AnyView,
         file: String = #file
     ) {
         self.title = title
         self.view = view
+        self.tags = tags
         let fileComponents = file.components(separatedBy: "/")
         self.file = fileComponents.last ?? "unknown"
+    }
+    
+    public func storybookTags(_ tags: String...) -> StorybookView {
+        let tags = Set(tags).union(self.tags)
+        return StorybookView(title: self.title, tags: tags, view: self.view, file: self.file)
+    }
+    
+    func _storybookTags(tags: [String]) -> StorybookView {
+        let tags = Set(tags).union(self.tags)
+        return StorybookView(title: self.title, tags: tags, view: self.view, file: self.file)
+    }
+}
+
+@available(iOS 13.0, *)
+@available(macOS 11, *)
+extension Array where Element == StoryBookView {
+    public func storybookTags(_ tags: String...) -> [StorybookView] {
+        return self.map({ $0._storybookTags(tags: tags) })
     }
 }
 
@@ -59,6 +82,7 @@ public class StorybookPage: NSObject, Identifiable {
     let chapter: String
     /// If directory exists then ignore title and chapter
     let directory: String?
+    let tags: Set<String>
     
     @available(*, deprecated, message: "Use init(folder: ...) for better experience")
     public convenience init<T: View>(
@@ -96,19 +120,14 @@ public class StorybookPage: NSObject, Identifiable {
         let fileComponents = file.components(separatedBy: "/")
         self.file = fileComponents.last ?? "unknown"
         self.directory = nil
+        self.tags = Set()
     }
     
-    /**
-     Creates a path to the specified views via the folder string. The fodler path with merge with other views using the same folder.
-     - Parameters:
-       - folder: The path to the folder that should contain the views. ex: path/to/folder/
-       - views: The views to host inside the specified folder
-       - file: The file that contains the views. Normally you do not need to specify the file unless it is different than the one that holds the views.
-     */
-    public init(
+    private init(
         folder directory: String,
         views: [StoryBookView],
-        file: String = #file
+        tags: Set<String>,
+        file: String
     ) {
         self.chapter = ""
         self.title = ""
@@ -116,6 +135,32 @@ public class StorybookPage: NSObject, Identifiable {
         let fileComponents = file.components(separatedBy: "/")
         self.file = fileComponents.last ?? "unknown"
         self.directory = directory
+        self.tags = tags
+    }
+    
+    /**
+     Creates a path to the specified views via the folder string. The fodler path with merge with other views using the same folder.
+     - Parameters:
+       - folder: The path to the folder that should contain the views. ex: path/to/folder/
+       - views: The views to host inside the specified folder
+       - tags: The tags to match against when searching
+       - file: The file that contains the views. Normally you do not need to specify the file unless it is different than the one that holds the views.
+     */
+    convenience
+    public init(
+        folder directory: String,
+        views: [StoryBookView],
+        tags: String...,
+        file: String = #file
+    ) {
+        // for some reason doing Set(tags) does not work
+        // it compiles fine but does not function, as if
+        // the tags are empty
+        var tagSet = Set<String>()
+        tags.forEach { tag in
+            tagSet.insert(tag)
+        }
+        self.init(folder: directory, views: views, tags: tagSet, file: file)
     }
     
     /**
@@ -123,15 +168,56 @@ public class StorybookPage: NSObject, Identifiable {
      - Parameters:
        - folder: The path to the folder that should contain the view. ex: path/to/folder/
        - view: The view to host inside the specified folder
+       - tags: The tags to match against when searching
        - file: The file that contains the views. Normally you do not need to specify the file unless it is different than the one that holds the views.
      */
     convenience
     public init(
         folder directory: String,
         view: StoryBookView,
+        tags: String...,
         file: String = #file
     ) {
-        self.init(folder: directory, views: [view], file: file)
+        // for some reason doing Set(tags) does not work
+        // it compiles fine but does not function, as if
+        // the tags are empty
+        var tagSet = Set<String>()
+        tags.forEach { tag in
+            tagSet.insert(tag)
+        }
+        self.init(folder: directory, views: [view], tags: tagSet, file: file)
+    }
+    
+    /**
+     Creates a path to the specified views via the folder string. The fodler path with merge with other views using the same folder.
+     - Parameters:
+       - folder: The folder object that should contain the views
+       - views: The views to host inside the specified folder
+       - file: The file that contains the views. Normally you do not need to specify the file unless it is different than the one that holds the views.
+     */
+    convenience
+    public init(
+        folder: StorybookFolder,
+        views: [StoryBookView],
+        file: String = #file
+    ) {
+        self.init(folder: folder.path, views: views, tags: folder.tags, file: file)
+    }
+    
+    /**
+     Creates a path to the specified views via the folder string. The fodler path with merge with other views using the same folder.
+     - Parameters:
+       - folder: The folder object that should contain the view
+       - view: The view to host inside the specified folder
+       - file: The file that contains the views. Normally you do not need to specify the file unless it is different than the one that holds the views.
+     */
+    convenience
+    public init(
+        folder: StorybookFolder,
+        view: StoryBookView,
+        file: String = #file
+    ) {
+        self.init(folder: folder, views: [view], file: file)
     }
 }
 #endif
