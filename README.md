@@ -2,8 +2,14 @@
 
 This package is a micro framework for rendering previews of components in a Storybook like fashion. It takes advantage of objc runtime and SwiftUI to make using it as seamless as possible. You do not need to be using SwiftUI in your app to use this, UIKit apps can also take advantage of this framework ([UIKit helper library](https://github.com/aj-bartocci/SwiftUIPreviewHelpers)).
 
-Version 2.0.0 is now ready. This brings some major new features and quality of life improments. These include:
+Version 2.1.0 is now ready. Recent features include:
 
+**Version 2.1.0:**
+- **Tagging system** - Organize and filter components using tags. Add tags to pages or individual views for easy categorization and discovery.
+- **Auto-navigation for single search results** - When searching by tag returns exactly one result, the view automatically opens for instant verification.
+- **AI development workflow** - Claude skill available for rapid visual verification during AI-assisted development.
+
+**Version 2.0.0:**
 - Preview controls. Previews now come with an overlay for controls that interact with the previews. Built in controls include a dark mode toggle, dynamic font sizing, and adjusting the preview screen size. You can add your own custom controls as well.
 - New folder based system for organizing previews. When building out a lot of components it was difficult to keep things organized with the old system. You can now specify folder paths (path/to/some/component) in order to easily organize where the previews live in the Storybook UI.
 - **Removing the DEBUG restriction.** It has been handy to be able to ship Storybook with non production builds so designers can spot check individual components without needing to navigate into certain situations within a live app. It is now your responsibility to wrap Storybook related code in whatever macro you choose so that will prevent it from going to production.
@@ -276,6 +282,19 @@ The `addingPath` method creates a new folder by appending to the current path an
 ### Filtering by Tags
 
 In the Storybook UI, you can filter components by selecting tags from the tags view. This allows you to quickly find all components with specific tags, regardless of where they are in the folder hierarchy.
+
+## AI-Assisted Development
+
+For AI-assisted development workflows, a Claude skill is available in the `skills/` directory that provides a complete workflow for visually verifying SwiftUI views during development.
+
+The [verifying-with-storybook](skills/verifying-with-storybook/SKILL.md) skill includes:
+
+- **Launch argument setup** - Configure your app to launch directly into Storybook
+- **UUID-based tagging strategy** - Use unique tags for instant navigation to specific views
+- **Verification workflow** - Complete flow from tagging to visual verification
+- **Tag management** - Best practices for temporary dev tags vs permanent semantic tags
+
+This enables rapid visual verification during development: tag a view with a unique identifier, launch the app to Storybook, and automatically navigate to that specific view.
 
 ## Models
 
