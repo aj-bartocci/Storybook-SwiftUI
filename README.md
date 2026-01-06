@@ -200,7 +200,84 @@ extension Storybook {
 }
 ```
 
-## Models 
+## Tags
+Tags provide a way to organize and filter your components in Storybook. You can add tags to both pages and individual views, making it easy to find related components across your design system.
+
+### Adding Tags to Pages
+
+Tags can be added to a `StorybookPage` using the `tags` parameter in the initializer:
+
+```swift
+extension Storybook {
+    @objc static let button = StorybookPage(
+        folder: "/Design System/Buttons",
+        views: [
+            PrimaryButton().storybookTitle("Primary"),
+            SecondaryButton().storybookTitle("Secondary")
+        ],
+        tags: "button", "interactive", "core"
+    )
+}
+```
+
+### Adding Tags to Individual Views
+
+You can also add tags to individual views using the `storybookTags` modifier:
+
+```swift
+extension Storybook {
+    @objc static let buttons = StorybookPage(
+        folder: "/Design System/Buttons",
+        views: [
+            PrimaryButton()
+                .storybookTitle("Primary")
+                .storybookTags("primary", "cta"),
+            SecondaryButton()
+                .storybookTitle("Secondary")
+                .storybookTags("secondary")
+        ],
+        tags: "button", "interactive"
+    )
+}
+```
+
+You can also apply tags to an array of views:
+
+```swift
+let views = [
+    SomeView().storybookTitle("View 1"),
+    SomeView().storybookTitle("View 2")
+].storybookTags("common-tag", "shared")
+```
+
+### Using StorybookFolder with Tags
+
+The `StorybookFolder` helper makes it easy to reuse folder paths and tags across multiple pages:
+
+```swift
+let designSystem = StorybookFolder(
+    name: "/Design System",
+    tags: "core", "design-system"
+)
+
+extension Storybook {
+    @objc static let buttons = StorybookPage(
+        folder: designSystem.addingPath("/Buttons", tags: "interactive"),
+        views: [
+            PrimaryButton().storybookTitle("Primary"),
+            SecondaryButton().storybookTitle("Secondary")
+        ]
+    )
+}
+```
+
+The `addingPath` method creates a new folder by appending to the current path and merging tags.
+
+### Filtering by Tags
+
+In the Storybook UI, you can filter components by selecting tags from the tags view. This allows you to quickly find all components with specific tags, regardless of where they are in the folder hierarchy.
+
+## Models
 
 __Storybook__
 
