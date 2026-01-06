@@ -100,7 +100,7 @@ private extension DispatchQueue {
 @available(iOS 13.0, *)
 @available(macOS 11, *)
 class StorybookCollectionData {
-    private var root = [String: StorybookEntry]()
+    private(set) var root = [String: StorybookEntry]()
     private var tags = Set<String>()
     
     lazy var sortedTags: [String] = {
