@@ -41,7 +41,9 @@ class StorybookEntry: Identifiable {
 //        return files.sorted().joined(separator: ",")
         return nil
     }
+    let tags: Set<String>
     var files = Set<String>()
+    var isFolder = false
     
     /// Used for rendering UI after the data has been built up
     lazy var destinations: [Destination] = {
@@ -55,35 +57,57 @@ class StorybookEntry: Identifiable {
         return destinations.map { destination in
             switch destination {
             case .view(let view):
-                return StorybookEntry(title: view.title, children: [:], views: [view], file: view.file)
+                return StorybookEntry(
+                    id: view.id.uuidString,
+                    title: view.title,
+                    children: [:],
+                    views: [view],
+                    tags: tags.union(view.tags),
+                    file: view.file
+                )
             case .entry(let entry):
                 return entry
             }
         }
     }()
     
-    let id = UUID().uuidString
+    let id: String
     
     init(
+        id: String,
         title: String,
         children: [String: StorybookEntry],
         views: [StoryBookView],
+        tags: Set<String>,
         file: String? = nil
     ) {
+        self.id = id
         self.title = title
         self.children = children
         self.views = views
+        let _tags = tags.map({ $0.lowercased() })
+        self.tags = Set(_tags)
         if let file = file {
             self.files.insert(file)
         }
     }
 }
 
+private extension DispatchQueue {
+    static let storybookCollection = DispatchQueue(label: "com.ajbartocci.storybookCollection.queue")
+}
+
 @available(iOS 13.0, *)
 @available(macOS 11, *)
 class StorybookCollectionData {
-    var root = [String: StorybookEntry]()
+    private(set) var root = [String: StorybookEntry]()
+    private var tags = Set<String>()
     
+    lazy var sortedTags: [String] = {
+        tags.sorted()
+    }()
+    
+    // TODO: rename this to rootEntries
     /// Used for rendering UI after the data has been built up
     lazy var sortedEntries: [StorybookEntry] = {
         return root.values.sorted { lhs, rhs in
@@ -104,9 +128,11 @@ class StorybookCollectionData {
                 switch destination {
                 case .view(let storyBookView):
                     arr.append(StorybookEntry(
+                        id: storyBookView.id.uuidString,
                         title: storyBookView.title,
                         children: [:],
                         views: [storyBookView],
+                        tags: storyBookView.tags,
                         file: storyBookView.file
                     ))
                 case .entry(let storybookEntry):
@@ -117,12 +143,13 @@ class StorybookCollectionData {
         for entry in sortedEntries {
             flattenEntry(entry, into: &flattened)
         }
-        return flattened
+        return flattened.sorted(by: { $0.title < $1.title }) 
     }()
     
     func addEntry(
         folder directory: String,
         views: [StoryBookView],
+        tags: Set<String>,
         file: String = #file
     ) {
         var directory = directory.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -137,10 +164,16 @@ class StorybookCollectionData {
             // nothing provided, need to show error
             paths = ["* Uncategorized"]
         }
+        // could combine tags here by recreating the views with the tags
+        let views = views.map { view in
+            return StorybookView(title: view.title, tags: view.tags.union(tags), view: view.view, file: view.file)
+        }
+        self.tags.formUnion(tags)
         addEntry(
             paths: paths,
             entryDirectory: &root,
             views: views,
+            tags: tags,
             file: file
         )
     }
@@ -149,6 +182,7 @@ class StorybookCollectionData {
         paths: [String],
         entryDirectory: inout [String: StorybookEntry],
         views: [StoryBookView],
+        tags: Set<String>,
         file: String = #file
     ) {
         let entry: StorybookEntry
@@ -157,13 +191,16 @@ class StorybookCollectionData {
             entry = existing
         } else {
             entry = StorybookEntry(
+                id: UUID().uuidString,
                 title: title,
                 children: [:],
-                views: []
+                views: [],
+                tags: tags
             )
             entryDirectory[title] = entry
         }
         entry.files.insert(file)
+        entry.isFolder = true
         if paths.count == 1 {
             // at the leaf node so append the views
             entry.views.append(contentsOf: views)
@@ -173,17 +210,66 @@ class StorybookCollectionData {
                 paths: Array(paths.dropFirst()),
                 entryDirectory: &entry.children,
                 views: views,
+                tags: tags,
                 file: file
             )
         }
     }
     
-    func entriesMatchingSearch(_ keyword: String) -> [StorybookEntry] {
+    func search(_ keyword: String, completion: @escaping ([StorybookEntry]) -> Void) {
+        let keyword = keyword.lowercased()
         if keyword.isEmpty {
-            return sortedEntries
+            completion(sortedEntries)
         } else {
-            return flattenedEntries.filter { entry in
-                return entry.title.lowercased().contains(keyword.lowercased())
+            DispatchQueue.storybookCollection.async { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                let entries: [StorybookEntry]
+                if keyword.first == "#" {
+                    let tags = Set(keyword.split(separator: ",").compactMap({
+                        let keyword: String
+                        if $0.first == "#" {
+                            keyword = $0.dropFirst().trimmingCharacters(in: .whitespaces)
+                        } else {
+                            keyword = $0.trimmingCharacters(in: .whitespaces)
+                        }
+                        if !keyword.isEmpty {
+                            return keyword
+                        } else {
+                            return nil
+                        }
+                    }))
+                    if tags.isEmpty {
+                        // show all with tags
+                        entries = flattenedEntries.filter { entry in
+                            return !entry.isFolder && !entry.tags.isEmpty
+                        }
+                    } else if tags.count == 1, let tag = tags.first {
+                        // single tag
+                        // show only matching tags
+                        entries = flattenedEntries.filter { entry in
+                            return !entry.isFolder && entry.tags.contains(where: { $0.contains(tag) })
+                        }
+                    } else {
+                        // multi tag
+                        // nested for loops are not ideal but whatever for now
+                        entries = flattenedEntries.filter { entry in
+                            return !entry.isFolder && entry.tags.contains(where: { entryTag in
+                                tags.contains { tag in
+                                    entryTag.contains(tag)
+                                }
+                            })
+                        }
+                    }
+                } else {
+                    entries = flattenedEntries.filter { entry in
+                        return entry.title.lowercased().contains(keyword.lowercased())
+                    }
+                }
+                DispatchQueue.main.async {
+                    completion(entries)
+                }
             }
         }
     }

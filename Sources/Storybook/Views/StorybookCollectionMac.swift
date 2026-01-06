@@ -3,12 +3,8 @@
 import SwiftUI
 
 @available(macOS 11, *)
-public struct StorybookCollection: View {
-    
-    @State var selectedItem: StorybookPage?
-    @State var selectedView: StoryBookView?
-    @State var collection: StorybookCollectionData = Storybook.build()
-    @State var searchText = ""
+private struct _StorybookCollection: View {
+    @EnvironmentObject private var viewModel: StorybookCollectionViewModel
     @Environment(\.storybookControls) private var envControls
     let embedInNav: Bool
     
@@ -17,7 +13,7 @@ public struct StorybookCollection: View {
     }
     
     public var body: some View {
-        if collection.sortedEntries.count == 0 {
+        if viewModel.showNoPagesError {
             noPagesMessage()
         } else {
             if embedInNav {
@@ -98,17 +94,50 @@ public struct StorybookCollection: View {
         
     private func listContent() -> some View {
         VStack {
-            SearchBar(searchText: $searchText)
+            SearchBar(searchText: $viewModel.searchText)
             List {
-                ForEach(collection.entriesMatchingSearch(searchText)) { entry in
-                    navContent(for: entry)
+                if !viewModel.isSearching {
+                    ForEach(viewModel.entries) { entry in
+                        navLink(for: entry)
+                    }
+                } else {
+                    ForEach(viewModel.entries) { entry in
+                        if entry.destinations.count == 1 {
+                            switch entry.destinations[0] {
+                            case .entry(let entry):
+                                navLink(for: entry)
+                            case .view(let storybookView):
+                                navLink(for: storybookView)
+                            }
+                        } else {
+                            navLink(for: entry)
+                        }
+                    }
                 }
             }
         }
-        .sheet(item: $selectedView, onDismiss: nil, content: { view in
+        .sheet(item: $viewModel.selectedView, onDismiss: nil, content: { view in
             previewContent(for: view)
                 .environment(\.storybookControls, envControls)
         })
+        .sheet(isPresented: $viewModel.showTagsSelector) {
+            TagsView(selectedTags: $viewModel.selectedTags, tags: viewModel.allTags)
+        }
+    }
+}
+
+@available(macOS 11, *)
+public struct StorybookCollection: View {
+    @State private var viewModel = StorybookCollectionViewModel()
+    let embedInNav: Bool
+        
+    public init(embedInNav: Bool = true) {
+        self.embedInNav = embedInNav
+    }
+    
+    public var body: some View {
+        _StorybookCollection(embedInNav: embedInNav)
+            .environmentObject(viewModel)
     }
 }
 #endif
