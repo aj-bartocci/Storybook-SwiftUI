@@ -60,8 +60,18 @@ class StorybookCollectionViewModel: ObservableObject {
     private func updateFromTextInput(_ searchText: String) {
         isUpdatingFromSearch = true
         updateTagsFromSearch(searchText)
+        let isTagSearch = searchText.trimmingCharacters(in: .whitespaces).first == "#"
         collection.search(searchText, completion: { [weak self] entries in
             self?.entries = entries
+
+            // Auto-navigate to single result when searching by tag
+            if isTagSearch && entries.count == 1 {
+                let entry = entries[0]
+                // Check if this single entry has only one view
+                if entry.views.count == 1, let view = entry.views.first {
+                    self?.selectedView = view
+                }
+            }
         })
         isUpdatingFromSearch = false
     }
