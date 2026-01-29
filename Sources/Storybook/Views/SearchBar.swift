@@ -11,6 +11,13 @@ struct SearchBar: UIViewRepresentable {
         let searchBar = UISearchBar()
         searchBar.placeholder = "Search - use # for tags"
         searchBar.delegate = context.coordinator
+
+        // Accessibility
+        searchBar.isAccessibilityElement = true
+        searchBar.accessibilityLabel = "Search components"
+        searchBar.accessibilityIdentifier = "storybook.searchBar"
+        searchBar.accessibilityTraits = .searchField
+
         return searchBar
     }
     
