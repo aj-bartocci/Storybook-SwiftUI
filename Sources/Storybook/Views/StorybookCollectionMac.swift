@@ -67,29 +67,27 @@ private struct _StorybookCollection: View {
         .storybookAddControls(.custom(.init(id: ControlConstant.rootId, view: { EmptyView() })))
     }
     
-    @ViewBuilder
-    func destinationContent(for destination: StorybookEntry.Destination) -> some View {
+    func destinationContent(for destination: StorybookEntry.Destination) -> AnyView {
         switch destination {
         case .entry(let nestedEntry):
-            navContent(for: nestedEntry)
+            return navContent(for: nestedEntry)
         case .view(let view):
-            NavigationLink(destination: {
+            return AnyView(NavigationLink(destination: {
                 previewContent(for: view)
             }, label: {
                 rowLabel(title: view.title, file: view.file)
-            })
+            }))
         }
     }
-    
-    @ViewBuilder
-    func navContent(for entry: StorybookEntry) -> some View {
-        DisclosureGroup(content: {
+
+    func navContent(for entry: StorybookEntry) -> AnyView {
+        AnyView(DisclosureGroup(content: {
             ForEach(entry.destinations) { destination in
                 destinationContent(for: destination)
             }
         }, label: {
             rowLabel(title: entry.title, file: entry.file)
-        })
+        }))
     }
         
     private func listContent() -> some View {
